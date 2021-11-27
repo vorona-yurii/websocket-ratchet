@@ -34,53 +34,6 @@ or add
 
 ### Methods
 
-###  Events
-
-* EVENT_WEBSOCKET_OPEN 
-
-> **Class** yii\base\Event - 
-Triggered when binding is successfully completed
-
-* EVENT_WEBSOCKET_CLOSE 
-
-> **Class** yii\base\Event - 
-Triggered when socket listening is closed
-
-* EVENT_WEBSOCKET_OPEN_ERROR
-
->  **Class** [events\ExceptionEvent](/events/ExceptionEvent.php) - 
-Triggered when throwed Exception on binding socket
-
-* EVENT_CLIENT_CONNECTED
-
-> **Class** [events\WSClientEvent](/events/WSClientEvent.php) - 
-Triggered when client connected to the server
-
-* EVENT_CLIENT_DISCONNECTED
-
-> **Class** [events\WSClientEvent](/events/WSClientEvent.php) - 
-Triggered when client close connection with server
-
-* EVENT_CLIENT_ERROR
-
-> **Class** [events\WSClientErrorEvent](/events/WSClientErrorEvent.php) - 
-Triggered when an error occurs on a Connection
-
-* EVENT_CLIENT_MESSAGE
-
-> **Class** [events\WSClientMessageEvent](/events/WSClientMessageEvent.php) - 
-Triggered when message recieved from client
-
-* EVENT_CLIENT_RUN_COMMAND
-
-> **Class** [events\WSClientCommandEvent](/events/WSClientCommandEvent.php) - 
-Triggered when controller starts user's command
-
-* EVENT_CLIENT_END_COMMAND
-
-> **Class** [events\WSClientCommandEvent](/events/WSClientCommandEvent.php) - 
-Triggered when controller finished user's command
-
 ## Examples
 
 ### Simple echo server
@@ -91,19 +44,15 @@ Create your server class based on WebSocketServer. For example ```daemons\EchoSe
 <?php
 namespace app\daemons;
 
-use consik\yii2websocket\events\WSClientMessageEvent;
-use consik\yii2websocket\WebSocketServer;
+use websocketRatchet\WebSocketServer;
 
 class EchoServer extends WebSocketServer
 {
 
-    public function init()
+    public function init($client, $message)
     {
         parent::init();
-
-        $this->on(self::EVENT_CLIENT_MESSAGE, function (WSClientMessageEvent $e) {
-            $e->client->send( $e->message );
-        });
+        $client->send( $message );
     }
 
 }
@@ -167,7 +116,7 @@ Create yii2 console controller for starting server:
 <?php
 namespace app\commands;
 
-use consik\yii2websocket\WebSocketServer;
+use websocketRatchet\WebSocketServer;
 use yii\console\Controller;
 
 class ServerController extends Controller
@@ -176,16 +125,6 @@ class ServerController extends Controller
     {
         $server = new WebSocketServer();
         $server->port = 80; //This port must be busy by WebServer and we handle an error
-
-        $server->on(WebSocketServer::EVENT_WEBSOCKET_OPEN_ERROR, function($e) use($server) {
-            echo "Error opening port " . $server->port . "\n";
-            $server->port += 1; //Try next port to open
-            $server->start();
-        });
-
-        $server->on(WebSocketServer::EVENT_WEBSOCKET_OPEN, function($e) use($server) {
-            echo "Server started at port " . $server->port;
-        });
 
         $server->start();
     }
@@ -212,7 +151,7 @@ Server class ```daemons\CommandsServer.php```:
 <?php
 namespace app\daemons;
 
-use consik\yii2websocket\WebSocketServer;
+use websocketRatchet\WebSocketServer;
 use Ratchet\ConnectionInterface;
 
 class CommandsServer extends WebSocketServer
@@ -274,20 +213,17 @@ Code without comments, try to understand it by youself ;)
 <?php
 namespace app\daemons;
 
-use consik\yii2websocket\events\WSClientEvent;
-use consik\yii2websocket\WebSocketServer;
+use websocketRatchet\WebSocketServer;
 use Ratchet\ConnectionInterface;
 
 class ChatServer extends WebSocketServer
 {
 
-    public function init()
+    public function init($client)
     {
         parent::init();
 
-        $this->on(self::EVENT_CLIENT_CONNECTED, function(WSClientEvent $e) {
-            $e->client->name = null;
-        });
+        $client->name = null;
     }
 
 
