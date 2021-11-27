@@ -1,0 +1,21 @@
+{
+	"name": "vorona-yurii/websocket-ratchet",
+	"description": "Websocket server component",
+	"type": "library",
+	"keywords": ["websocket", "component", "ratchet"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Yurii Vorona (yuv)",
+			"email": "voronayu1331@gmail.com"
+		}
+	],
+	"require": {
+		"cboden/ratchet": "0.3.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"websocketRatchet\\": ""
+		}
+	}
+}
