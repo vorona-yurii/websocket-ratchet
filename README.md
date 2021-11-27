@@ -13,13 +13,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-composer require consik/yii2-websocket
+composer require vorona-yurii/websocket-ratchet
 ```
 
 or add
 
 ```json
-"vorona-yurii/websocket-ratcher": "dev-master"
+"vorona-yurii/websocket-ratchet": "dev-master"
 ```
 
 ## WebSocketServer class description
